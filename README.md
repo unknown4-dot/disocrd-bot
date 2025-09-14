@@ -8,3 +8,12 @@ mute
 
 and many fun commands
 
+________________________
+
+do not forget to install discord in terminal
+____________________
+pip install discord
+____________________
+
+
+
