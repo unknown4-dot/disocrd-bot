@@ -2,12 +2,43 @@ import discord
 import random
 from discord.ext import commands
 import time
+import asyncio
 
 
 intents = discord.Intents.default()
 intents.message_content = True
 
 bot = commands.Bot(command_prefix='?', intents=intents)
+
+message_counts = {}
+
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+        
+    
+          
+    muted_role = discord.utils.get(message.guild.roles, name="Muted")
+          
+    if message.author.id in message_counts:
+        message_counts[message.author.id] += 1
+    else:
+        
+        message_counts[message.author.id] = 1
+        return  # Don't check on first message
+              
+    if message_counts[message.author.id] >= 7:
+          # Mute after 4 messages
+        await message.author.add_roles(muted_role)
+        await message.channel.send(f"{message.author.mention} | has been muted for 20 second reason = spamming")
+              
+        await asyncio.sleep(10)  # 5 minutes (300 seconds)
+              
+        await message.author.remove_roles(muted_role)
+        await message.channel.send(f"{message.author.mention} | has been unmuted")
+        message_counts[message.author.id] = 0  # Reset counter
+        await bot.process_commands(message)
 
 
 @bot.command()
@@ -84,11 +115,27 @@ async def ban(ctx, member: discord.Member):
 async def mute(ctx, member: discord.Member):
     if ctx.author.top_role.position <= member.top_role.position:
         return await ctx.send(f"{ctx.author.mention} | i cant mute this member the member has higher role")
+        
+    muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
     try:
-        await member.mute()
+        await member.add_roles(muted_role)
         await ctx.send(f"the member has been muted!! | {ctx.author.mention}")
-    except:
+    except discord.Forbidden:
         await ctx.send(f"failed to mute :( | {ctx.author.mention}")
+        
+        
+@bot.command()
+@commands.has_permissions(manage_roles=True)
+async def unmute(ctx, member: discord.Member):
+    if ctx.author.top_role.position <= member.top_role.position:
+        return await ctx.send(f"{ctx.author.mention} | i cant unmute this member the member has higher role")
+        
+    muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
+    try:
+        await member.remove_roles(muted_role)
+        await ctx.send(f"the member has been unmuted!! | {ctx.author.mention}")
+    except discord.Forbidden:
+        await ctx.send(f"failed to unmute :( | {ctx.author.mention}")
         
         
 @bot.command()
@@ -103,7 +150,9 @@ async def kick(ctx, member: discord.Member):
         await ctx.send(f"failed to kick :( | {ctx.author.mention}")
         
         
-        
+ 
+    
+                                    
 @bot.command()
 async def github(ctx):
     await ctx.send(f"my github | {ctx.author.mention}")
@@ -167,12 +216,6 @@ async def Linux(ctx):
    
    await ctx.send(embed=embed)
 
-question = ["why do you use github?", "python or javascript?", "is Sudo your favorite bot?",
- "did you join Sudo discord server?", "whats the best android os?", 
- "whats the best linux distro", "whats your favorite gaming console?", 
- "whats your favorite game?", "whats your favorite drink?", "whats your favorite food?",
- "whats your favorite programming language", "why are you a programmer?",
- "android or IOS?"]
 
 
 
@@ -188,5 +231,13 @@ async def question(ctx):
  
       q = random.choice(idkidk)
       await ctx.send(f"{q} | {ctx.author.mention}")
-      
-   
+
+     
+
+
+
+
+
+              
+                   
+
