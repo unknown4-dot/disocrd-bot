@@ -15,7 +15,7 @@ ____________________
 pip install discord
 ____________________
 
-Updated In 2025/Sep/15
+Updated In 2025/Sep/16
 
 
 
