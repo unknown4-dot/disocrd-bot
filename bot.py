@@ -169,11 +169,11 @@ async def kick(ctx, member: discord.Member):
 
 @bot.command()
 async def github(ctx):
-    await ctx.send(f"my github | {ctx.author.mention}")
+    await ctx.send(f"my github | https://github.com/unknown4-dot {ctx.author.mention}")
 
 @bot.command()
 async def server(ctx):
-    await ctx.send(f"here is our server!! | {ctx.author.mention}")
+    await ctx.send(f"here is our server!! | https://discord.gg/JfNrQMEbhH {ctx.author.mention}")
 
 @bot.command()
 async def say(ctx, *, message):
@@ -214,3 +214,32 @@ async def question(ctx):
 @bot.command()
 async def goodBoy(ctx):
          await ctx.send(f"thanks daddy | {ctx.author.mention} ")
+         
+                         
+                                         
+@bot.command()
+async def ping(ctx):
+         embed = discord.Embed(title="Ping", color=discord.Color.red())
+         embed.add_field(name="Im Still Online!!", value="Sudo", inline=False)
+
+
+
+     
+bad_words = ["nigger", "daik 7iz", "daik qa7ba", "daik qahba", "hitler", "jewish", "kys"]                   
+         
+@bot.event
+async def on_message(message):
+    
+    muted_role = discord.utils.get(message.guild.roles, name="Muted")
+    
+    if message.author == bot.user:
+        return
+        
+    content = message.content.lower() 
+    if any(bad_words in content for bad_words in bad_words):
+        await message.author.add_roles(muted_role)
+        await message.channel.send(f"{message.author.mention} has been muted!! | reason=bad_words")
+        await asyncio.sleep(30)
+        await message.author.remove_roles(muted_role)
+        await message.channel.send(f"{message.author.mention} | has been unmuted!!")
+        
