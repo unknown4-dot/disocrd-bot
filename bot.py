@@ -106,9 +106,12 @@ async def features(ctx):
     embed = discord.Embed(title="Features", color=discord.Color.red())
     embed.add_field(name="Anti-Spam", value="make chats clean and no spam:)", inline=False)
     embed.add_field(name="welcome", value="welcome members:)", inline=False)
+    
+    
+    embed.add_field(name="no bad words", value="make chats clean:)", inline=False)
+    
     await ctx.send(embed=embed)
     
-
 @bot.command()
 @commands.has_permissions(ban_members=True)
 async def ban(ctx, member: discord.Member):
@@ -221,6 +224,7 @@ async def goodBoy(ctx):
 async def ping(ctx):
          embed = discord.Embed(title="Ping", color=discord.Color.red())
          embed.add_field(name="Im Still Online!!", value="Sudo", inline=False)
+         await ctx.send(embed=embed)
 
 
 
@@ -230,10 +234,14 @@ bad_words = ["nigger", "daik 7iz", "daik qa7ba", "daik qahba", "hitler", "jewish
 @bot.event
 async def on_message(message):
     
+    
+    
     muted_role = discord.utils.get(message.guild.roles, name="Muted")
     
     if message.author == bot.user:
         return
+        
+    
         
     content = message.content.lower() 
     if any(bad_words in content for bad_words in bad_words):
@@ -242,6 +250,6 @@ async def on_message(message):
         await asyncio.sleep(30)
         await message.author.remove_roles(muted_role)
         await message.channel.send(f"{message.author.mention} | has been unmuted!!")
-
-        await bot.process_commands(message)
+        
+    await bot.process_commands(message)
         
