@@ -242,4 +242,6 @@ async def on_message(message):
         await asyncio.sleep(30)
         await message.author.remove_roles(muted_role)
         await message.channel.send(f"{message.author.mention} | has been unmuted!!")
+
+        await bot.process_commands(message)
         
